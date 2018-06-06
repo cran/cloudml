@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>Deploying Models</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Deploying Models</h1>
+
+
+
+<p>You can host your trained machine learning models in the cloud and use the Cloud ML prediction service to infer target values for new data. This page discusses model hosting and prediction and introduces considerations you should keep in mind for your projects.</p>
+<div id="model-deployment" class="section level2">
+<h2>Model Deployment</h2>
+<p>Cloud ML Engine can host your models so that you can get predictions from them in the cloud. The process of hosting a saved model is called deployment. The prediction service manages the infrastructure needed to run your model at scale, and makes it available for online and batch prediction requests. This section describes model deployment.</p>
+<div id="exporting-a-savedmodel" class="section level3">
+<h3>Exporting a SavedModel</h3>
+<p>The Cloud ML prediction service makes use of models exported through the <code>export_savedmodel()</code> function which is available for models created using the <a href="https://tensorflow.rstudio.com/tensorflow/">tensorflow</a>, <a href="https://tensorflow.rstudio.com/keras/">keras</a> and <a href="https://tensorflow.rstudio.com/tfestimators/">tfestimators</a> packages or any other tool that support the <a href="https://www.tensorflow.org/api_docs/python/tf/train/Saver">tf.train.Saver</a> interface.</p>
+<p>For instance, we can use <code>examples/keras/train.R</code> included in this package to define and train an MNIST keras model by running:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(keras)
+
+FLAGS &lt;-<span class="st"> </span><span class="kw">flags</span>(
+  <span class="kw">flag_numeric</span>(<span class="st">&quot;dropout_rate&quot;</span>, <span class="fl">0.4</span>)
+)
+
+mnist &lt;-<span class="st"> </span><span class="kw">dataset_mnist</span>()
+x_train &lt;-<span class="st"> </span>mnist$train$x
+y_train &lt;-<span class="st"> </span>mnist$train$y
+x_test &lt;-<span class="st"> </span>mnist$test$x
+y_test &lt;-<span class="st"> </span>mnist$test$y
+
+x_train &lt;-<span class="st"> </span><span class="kw">array_reshape</span>(x_train, <span class="kw">c</span>(<span class="kw">nrow</span>(x_train), <span class="dv">784</span>))
+x_test &lt;-<span class="st"> </span><span class="kw">array_reshape</span>(x_test, <span class="kw">c</span>(<span class="kw">nrow</span>(x_test), <span class="dv">784</span>))
+x_train &lt;-<span class="st"> </span>x_train /<span class="st"> </span><span class="dv">255</span>
+x_test &lt;-<span class="st"> </span>x_test /<span class="st"> </span><span class="dv">255</span>
+
+y_train &lt;-<span class="st"> </span><span class="kw">to_categorical</span>(y_train, <span class="dv">10</span>)
+y_test &lt;-<span class="st"> </span><span class="kw">to_categorical</span>(y_test, <span class="dv">10</span>)
+
+model &lt;-<span class="st"> </span><span class="kw">keras_model_sequential</span>()
+
+model %&gt;%
+<span class="st">  </span><span class="kw">layer_dense</span>(<span class="dt">units =</span> <span class="dv">256</span>, <span class="dt">activation =</span> <span class="st">'relu'</span>, <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">784</span>)) %&gt;%
+<span class="st">  </span><span class="kw">layer_dropout</span>(<span class="dt">rate =</span> FLAGS$dropout_rate) %&gt;%
+<span class="st">  </span><span class="kw">layer_dense</span>(<span class="dt">units =</span> <span class="dv">128</span>, <span class="dt">activation =</span> <span class="st">'relu'</span>) %&gt;%
+<span class="st">  </span><span class="kw">layer_dropout</span>(<span class="dt">rate =</span> <span class="fl">0.3</span>) %&gt;%
+<span class="st">  </span><span class="kw">layer_dense</span>(<span class="dt">units =</span> <span class="dv">10</span>, <span class="dt">activation =</span> <span class="st">'softmax'</span>)
+
+model %&gt;%<span class="st"> </span><span class="kw">compile</span>(
+  <span class="dt">loss =</span> <span class="st">'categorical_crossentropy'</span>,
+  <span class="dt">optimizer =</span> <span class="kw">optimizer_rmsprop</span>(),
+  <span class="dt">metrics =</span> <span class="kw">c</span>(<span class="st">'accuracy'</span>)
+)
+
+model %&gt;%<span class="st"> </span><span class="kw">fit</span>(
+  x_train, y_train,
+  <span class="dt">epochs =</span> <span class="dv">20</span>, <span class="dt">batch_size =</span> <span class="dv">128</span>,
+  <span class="dt">validation_split =</span> <span class="fl">0.2</span>
+)
+
+<span class="kw">export_savedmodel</span>(model, <span class="st">&quot;savedmodel&quot;</span>)</code></pre></div>
+</div>
+<div id="deploying-the-model" class="section level3">
+<h3>Deploying the Model</h3>
+<p>Deployment is performed through <code>cloudml_deploy()</code> which uses the same <code>gcloud</code> and <code>cloudml</code> configuration concepts used while training. We can train any exported model by running:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cloudml_deploy</span>(<span class="st">&quot;savedmodel&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;keras_mnist&quot;</span>)</code></pre></div>
+<pre><code>Copying file://savedmodel/variables/variables.data-00000-of-00001 [Content-Type=application/octet-stream]...
+Copying file://savedmodel/saved_model.pb [Content-Type=application/octet-stream]...
+Copying file://savedmodel/variables/variables.index [Content-Type=application/octet-stream]...
+/ [3/3 files][  1.9 MiB/  1.9 MiB] 100% Done                                    
+Operation completed over 3 objects/1.9 MiB.
+
+Model created and available in https://console.cloud.google.com/mlengine/models/keras_mnist</code></pre>
+<p>Notice that models make use of unique names and versions which can be specified using the <code>name</code> and <code>version</code> parameters in <code>cloudml_deploy()</code>.</p>
+</div>
+</div>
+<div id="prediction" class="section level2">
+<h2>Prediction</h2>
+<p>Once a model is deployed, predictions can be performed by providing a list of inputs into <code>cloudml_predict()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mnist_image &lt;-<span class="st"> </span>keras::<span class="kw">dataset_mnist</span>()$train$x[<span class="dv">1</span>,,]
+grid::<span class="kw">grid.raster</span>(mnist_image /<span class="st"> </span><span class="dv">255</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /> <br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cloudml_predict</span>(
+  <span class="kw">list</span>(
+    <span class="kw">as.vector</span>(<span class="kw">t</span>(mnist_image))
+  ),
+  <span class="dt">name =</span> <span class="st">&quot;keras_mnist&quot;</span>,
+)</code></pre></div>
+<pre><code>$predictions
+                       dense_3
+1 0, 0, 0, 0, 0, 1, 0, 0, 0, 0</code></pre>
+<p>For additional information visit <a href="https://cloud.google.com/ml-engine/docs/prediction-overview">Google Cloud Platform - Prediction Basics</a></p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
