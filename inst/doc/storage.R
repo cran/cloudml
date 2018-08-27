@@ -15,15 +15,25 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 #  gs_rsync("gs://quarter-deck-529/training-data", "training-data")
 
 ## ------------------------------------------------------------------------
+#  library(tfdatasets)
+#  library(cloudml)
+#  
+#  data_dir <- gs_data_dir("gs://mtcars-data")
+#  mtcars_csv <- file.path(data_dir, "mtcars.csv")
+#  
+#  mtcars_dataset <- csv_dataset(mtcars_csv) %>%
+#    dataset_prepare(x = c(mpg, disp), y = cyl)
+
+## ------------------------------------------------------------------------
 #  library(cloudml)
 #  library(readr)
-#  data_dir <- gs_local_dir("gs://quarter-deck-529/training-data")
+#  data_dir <- gs_data_dir_local("gs://quarter-deck-529/training-data")
 #  train_data <- read_csv(file.path(data_dir, "train.csv"))
 #  test_data <- read_csv(file.path(data_dir, "test.csv"))
 
 ## ------------------------------------------------------------------------
 #  train_generator <- flow_images_from_directory(
-#    gs_local_dir("gs://quarter-deck-529/images/train"),
+#    gs_data_dir_local("gs://quarter-deck-529/images/train"),
 #    image_data_generator(rescale = 1/255),
 #    target_size = c(150, 150),
 #    batch_size = 32,
@@ -41,7 +51,7 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 #  
 #  # determine the location of the directory (during local development this will
 #  # be the default "data" subdirectory specified in the FLAGS declaration above)
-#  data_dir <- gs_local_dir(FLAGS$data_dir)
+#  data_dir <- gs_data_dir_local(FLAGS$data_dir)
 #  
 #  # read the data
 #  train_data <- read_csv(file.path(FLAGS$data_dir, "train.csv"))
