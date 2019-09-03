@@ -60,9 +60,21 @@ cloudml_train <- function(file = "train.R",
       !identical(cloudml$trainingInput$scaleTier, "CUSTOM"))
     cloudml$trainingInput$scaleTier <- "CUSTOM"
 
+  # use the basic tier when no configuration is passed via file or via
+  # the `config` argument.
+  if (length(cloudml) == 0L)
+    cloudml$trainingInput <- list(scaleTier = "BASIC")
+
+  # Get the customCOmmands field from the config file.
+  custom_commands <- cloudml[["customCommands"]]
+  cloudml[["customCommands"]] <- NULL
+
   # set application and entrypoint
   application <- getwd()
   entrypoint <- file
+
+  # allow absolute paths under relative path
+  entrypoint <- gsub(paste0("^", getwd(), .Platform$file.sep), "", entrypoint)
 
   # prepare application for deployment
   id <- unique_job_name("cloudml")
@@ -89,7 +101,8 @@ cloudml_train <- function(file = "train.R",
   # pass parameters to the job
   job_yml <- file.path(deployment$directory, "job.yml")
   yaml::write_yaml(list(
-    storage = storage
+    storage = storage,
+    custom_commands = custom_commands
   ), job_yml)
 
   # move to deployment parent directory and spray __init__.py
